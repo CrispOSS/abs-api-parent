@@ -3,6 +3,10 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
+	<prerequisites>
+		<maven>3.3.0</maven>
+	</prerequisites>
+
 	<groupId>com.github.crisposs</groupId>
 	<name>ABS API Documentation</name>
 	<artifactId>abs-api-docs</artifactId>
@@ -10,12 +14,6 @@
 	<packaging>jar</packaging>
 	<url>https://github.com/CrispOSS/abs-api-parent/tree/master/abs-api-docs</url>
 	
-	<parent>
-		<groupId>com.github.crisposs</groupId>
-		<artifactId>abs-api-parent</artifactId>
-		<version>1.0.0-SNAPSHOT</version>
-	</parent>
-
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.docs.directory>${project.build.directory}/docs</project.docs.directory>
