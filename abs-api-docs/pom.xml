@@ -51,10 +51,18 @@
 								<icons>font</icons>
 								<toc2>true</toc2>
 								<toc-position>right</toc-position>
+								<toclevels>4</toclevels>
 								<setanchors>true</setanchors>
+								<sectlinks>true</sectlinks>
 								<numbered>true</numbered>
+								<linkattrs>true</linkattrs>
 								<idprefix>-</idprefix>
 								<idseparator>-</idseparator>
+								<!-- Do not embed assets -->
+								<linkcss>true</linkcss>
+								<stylesdir>./css</stylesdir>
+								<imagesdir>./images</imagesdir>
+								<stylesheet>asciidoctor.css</stylesheet>
 							</attributes>
 						</configuration>
 					</execution>
