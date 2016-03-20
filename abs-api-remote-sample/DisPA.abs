@@ -1,0 +1,343 @@
+module DisPA;
+
+//import * from TestPro;
+fimport getNumCapabilities from Control.Concurrent;
+fimport unsafePerformIO from System.IO.Unsafe;
+
+// The mutable-array operations
+fimport IOVector from Data.Vector.Mutable;
+fimport unsafeNew from Data.Vector.Mutable;
+fimport unsafeRead from Data.Vector.Mutable;
+fimport unsafeWrite from Data.Vector.Mutable;
+
+// For generating random numbers
+fimport GenIO from System.Random.MWC;
+fimport createSystemRandom from System.Random.MWC; // creates new non-fixed seed taken from hardware
+fimport uniformR from System.Random.MWC;           
+
+// For measuring execution time
+fimport getTime from System.Clock;
+fimport diffTimeSpec from System.Clock;
+fimport Clock from System.Clock;
+fimport TimeSpec from System.Clock;
+
+def Bool isElem<A>(A l, List<A> ls) = case ls {
+    Nil => False;
+    Cons(l_,ls_) => l == l_ || isElem(l,ls_);
+};
+
+// this function is just an alias to an imported function, so it can be automatically lifted&used in the imperative world.
+def TimeSpec diff(TimeSpec a, TimeSpec b) = diffTimeSpec(a,b); 
+
+def Int workers() = unsafePerformIO(getNumCapabilities());         // how many workers (threads) running in parallel
+
+def Int localIndex(Int index) = (((index-1)/d()+1 - (d() + 2))/workers())*d() + (index-1)%d();
+
+def Int actorIndex(Int index) = ((index-1)/d()+1 - (d() + 2))%workers();
+
+def Int d() = 3;               // the attachment (friendliness) degree
+
+def Int num() = 100000;         // the maximum people we want to simulate
+
+def Int kinit() = d() * (d() + 1); // the given initial clique "social" connections (cells, edges*2) (the initial social is a complete graph)
+
+def Int graphArraySize() = num() * d() ;          // the size of the graph-array. number-of-edges * 2
+
+def Int workerSize() = ((num()) / workers()) * d(); // the size of the chunk of the graph-array for each worker
+
+def IOVector<IWorker> ws2() = unsafePerformIO(unsafeNew(workers()+1)); // the only mutable shared resource, i.e., the array of workers 
+//TODO it should be replaced
+
+interface IWorker {
+  Unit run_();
+  Unit init_();
+  Int request(Int source);
+}
+
+class Worker(Int workerId, Int size) implements IWorker {
+   Int aliveDelegates = 0;
+   GenIO g;
+   IOVector<Promise<Int>> arr; // local partition
+   IOVector<Promise<Int>> initArr; // each worker has a copy of initial clique (performance)
+    
+   {
+      // create random seed, this is a heavy hardware operation, but it provides a good random seed
+      this.g = createSystemRandom();
+	this.arr = unsafeNew(size + 1); 
+	this.initArr = unsafeNew(kinit+1); 
+   }
+
+   Unit init_() {
+	Promise<Int> c;
+           // START INIT clique of the graph
+	Int index = 1;
+	Int i = 0;                     // i is for the 1st-loop
+	Int j = 0;                     // j is for the 2nd-loop
+	while (i <= d()) {
+		j = 1;
+		while (j <= d()) {
+		       c = pro_new;
+		       index = j + (i * d());
+		       if (j <= i) c.pro_give(j); else c.pro_give(-1);
+		       unsafeWrite(initArr, index, c);
+		       j = j + 1;
+		}
+	i = i + 1;
+	}
+	// END INIT the full clique of the graph
+	// initialize the partition
+	index = 0;
+	while (index <= size) {
+	       c = pro_new;
+	       unsafeWrite(arr, index, c);
+	       index = index + 1;
+	}
+   }
+
+   Unit run_() {
+	Int j = 0;
+	Int i = d + 2 + (workerId - 1);
+	Int temp = kinit + (workerId - 1) * d;
+	Int source = 0;
+	Int target = 0;
+	Int u = 0;
+	Promise<Int> c;
+	while (i <= num) {
+		j = 1;
+		List<Int> pastDraws = Nil;
+		while (j <= d()) {
+			source = uniformR(Pair(1,temp*2), this.g);
+			target = temp + j;
+			u = 0;				
+			if (source > temp) { // this is for the coin flipping, it means that you pick from the shadow array
+				source=source-temp;
+				if (source > kinit()){
+					u = (source - 1) / d() + 1;
+					if (isElem(u,pastDraws)) 
+						j = j - 1;
+					else {
+						pastDraws = Cons(u,pastDraws);
+						Int lTarget = localIndex(target);
+						c = unsafeRead(arr, lTarget);
+						c.pro_give(u);
+					}
+				}  
+				else 
+				{            // the picked element is from the shadow-clique array
+					c = unsafeRead(initArr, source);
+					u = c.pro_get;
+					if (u == -1)   // picked an empty element of initial clique
+					       j = j - 1; // so retry
+					else {
+						u = (source - 1) / d() + 1;
+						if (isElem(u,pastDraws)) j = j - 1;
+						else {
+							pastDraws = Cons(u,pastDraws);
+							Int lTarget = localIndex(target);
+							//println(toString(lTarget));
+							c = unsafeRead(arr, lTarget);
+							c.pro_give(u);
+						}					
+					}
+				} 
+			}
+			else             // here you pick from the real array
+			{
+				if (source > kinit()){
+					Int aIndex = actorIndex(source);
+					IWorker w = unsafeRead(ws2(), aIndex);
+					Fut<Int> fp = w!request(source);
+					this ! delegate(fp, target);
+					aliveDelegates = aliveDelegates + 1;
+				} else {
+					c = unsafeRead(initArr, source);
+					u = c.pro_get;
+					if (u == -1)   // picked an empty element of initial clique
+					       j = j - 1;
+					else if (isElem(u,pastDraws)) 
+						j = j - 1;
+					else {
+						pastDraws = Cons(u,pastDraws);
+						Int lTarget = localIndex(target);
+						c = unsafeRead(arr, lTarget);
+						c.pro_give(u);
+					}					
+				}	
+		       }
+		       j = j + 1;
+		}
+		i = i + workers;
+		temp = temp + d * workers ;
+       }
+       // one while loops to wait for all delegates to finish
+       await (this.aliveDelegates == 0);
+
+   }
+
+    Int request(Int source){ // to return the requested slot of the worker when it is resolved
+	Promise<Int> c;
+	if (source > kinit){
+		Int lSource = localIndex(source);
+		c = unsafeRead(arr, lSource);
+		await c$;
+	}
+	else
+		c = unsafeRead(initArr, source);
+	Int v = c.pro_get;    
+	return v;
+    }
+
+    Unit delegate(Fut<Int> ft, Int target) { // if the requested slot belongs to another worker
+        await ft?;
+        Int u = ft.get;
+	Promise<Int> c;
+        // START inlined conflictcheck
+	Bool found = False;
+	if (u != -1) {
+		Int i = ((target - 1)/d()) * d() + 1;
+		Int lCurrentNode = i + d() - 1;
+		Int item = 0;
+		Maybe<Int> maybeElement = Nothing;
+		Int v = 0;
+		while (i <= lCurrentNode) {
+			Int li = localIndex(i);
+			c = unsafeRead(arr, li);
+			maybeElement = c.pro_try;
+			if (isJust(maybeElement)) {
+				v = fromJust(maybeElement);
+				if (u == v) {
+					found = True;
+					i = lCurrentNode + 1; //just to break the while
+				}
+			}
+			i = i + 1;
+		}
+	}
+        // END inlined conflictcheck
+        if (found || u == -1) { // if conflict happens or it's an -1 from initial clique
+		u = ((target - 1)/d()) * d();
+            	u = uniformR(Pair(1,u), this.g);
+		Int aIndex = actorIndex(u);
+		IWorker w = unsafeRead(ws2(), aIndex);
+		Fut<Int> fp = w!request(u);
+		this.delegate(fp, target);
+        }
+        else { // the slot is resolved
+		Int lTarget = localIndex(target);
+		c = unsafeRead(arr, lTarget);
+		c.pro_give(u);
+		aliveDelegates = aliveDelegates -1;
+        }
+
+    }
+}
+
+
+{
+ // START creating the workers
+ Int i = 1;
+ IWorker w;
+ Int size = (num - (d+1)) / workers();
+ Int off = num - (d+1) - size * workers();
+ List<IWorker> ws = Nil;
+ while (i<=workers()) {
+	if (off >= i)
+     		w = new Worker(i, (size + 1)*d);
+	else
+		w = new Worker(i, size*d);
+	ws = Cons(w,ws);
+	unsafeWrite(ws2, i-1, w); 
+	i = i + 1;
+ }
+ // END creating the workers
+
+ //Start parallel initialization of the array by workers
+ Fut<Unit> ff;
+ List<IWorker> ws_ = ws;
+ List<Fut<Unit>> fs = Nil;
+ while (ws_ != Nil) {
+	w = head(ws_);
+	ff = w ! init_();
+	fs = Cons(ff,fs);
+	ws_ = tail(ws_);
+ }
+ //End parallel initialization of the array by workers
+
+ // wait for workers to finish initialize
+ while (fs != Nil) {
+     ff = head(fs);
+	 ff.get;
+     fs = tail(fs);
+ }
+ // START RUNNING
+ println("START RUNNING");
+ TimeSpec t1 = getTime(Monotonic);
+ while (ws != Nil) {
+     w = head(ws);
+	 ff = w ! run_();  // run each worker
+     fs = Cons(ff,fs);
+     ws = tail(ws);
+ }
+ // wait for workers to finish run
+ while (fs != Nil) {
+     ff = head(fs);
+	 ff.get;
+     fs = tail(fs);
+ }
+  TimeSpec t2 = getTime(Monotonic);
+
+  TimeSpec t3 = diff(t2,t1);    //  compute the difference       (t2 - t1)
+
+  println(toString(t3));
+
+//BEGIN of getting frequency of the degrees   
+//  Int index = 1;
+//  Int counter = 0;
+//  Int v = 0;
+//  Int v2 = 0;
+//  IOVector<Int> arr = unsafeNew(num()+1);
+//   while(index<= d + 1){
+//	unsafeWrite(arr, index, index-1);
+//	index = index + 1;
+//   }
+//   while(index<= num){
+//	unsafeWrite(arr, index, d);
+//	index = index + 1;
+//   }
+//  index = 1;
+//  while (index <= graphArraySize()){
+//	Int aIndex = actorIndex(index);	
+//	w = unsafeRead(ws2, aIndex);	
+//	Fut<Int> f = w!request(index);
+//	v = f.get;
+//	if (v >= 0) 
+//	{
+//		Int x = unsafeRead(arr, v);
+//		x = x + 1;
+//		unsafeWrite(arr, v, x);	
+//	}
+//	index = index + 1;
+//  }
+
+//  i = 0;
+//  Int degree=0;
+//  while (i<num) {
+//	Int j = 1;
+//	counter = 0;
+//	degree = degree + 1;
+//	while (j<= num()){
+//		v = unsafeRead(arr, j);
+//		if (v == degree){
+//			counter = counter + 1;
+//			i = i + 1;
+//		}
+//		j=j+1;
+//	}
+//	println(toString(counter));	
+//  }
+//END of getting frequency of the degrees 
+
+ //Test t = new local TestPro();
+ //t.test(graphArray(), graphArraySize() - kinit(), kinit() +1, graphArraySize(), d());
+
+}
