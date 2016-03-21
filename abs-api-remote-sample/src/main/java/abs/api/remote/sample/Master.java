@@ -27,6 +27,7 @@ public class Master extends AbstractNode implements Actor, Node {
 		this.nodes = new ArrayList<>(workers);
 		size = (num - (d+1)) / workers;
 		off = num - (d+1) - size * workers;
+		
 		start();
 	}
 

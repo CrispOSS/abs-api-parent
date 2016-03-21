@@ -96,6 +96,10 @@ public class ActorServer implements Lifecycle {
 		server.start();
 		return server;
 	}
+	
+	public String getReference(){
+	  return "@http://"+ host+":"+port;
+	}
 
 	public static void main(String[] args) throws Exception {
 		new ActorServer(System.getProperties());

@@ -16,6 +16,7 @@ public class Main1 {
 		props1.put("host", "localhost");
 		props1.put("port", "7777");
 		ActorServer server1 = new ActorServer(props1);
+		
 
 		Echo e1 = new Echo(1);
 		Actor a1 = server1.context.newActor("echo-1", e1);

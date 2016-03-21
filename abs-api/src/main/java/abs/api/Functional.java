@@ -704,5 +704,4 @@ public final class Functional {
         .orDefault((List<E> l) -> insert(l.get(0), set_func(l.subList(1, l.size()))));
     return m.apply(list).get();
   }
-
 }
