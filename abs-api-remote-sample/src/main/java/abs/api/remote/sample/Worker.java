@@ -140,7 +140,11 @@ public class Worker extends AbstractNode implements Actor, Node {
 		if (found || u == HOLE) { // if conflict happens or it's an -1 from
 									// initial clique
 			u = ((target - 1) / d) * d;
+<<<<<<< HEAD
 			u = g.nextInt(u) + 1;
+=======
+			u = g.nextInt(u + 1) + 1;
+>>>>>>> 05d4e3e3c81f5186c456c0dd46c0d4bdd2551a7e
 
 			int aIndex = actorIndex(u);
 
@@ -170,7 +174,11 @@ public class Worker extends AbstractNode implements Actor, Node {
 			j = 1;
 			List<Integer> pastDraws = new ArrayList<Integer>();
 			while (j <= d) {
+<<<<<<< HEAD
 				source = g.nextInt(temp * 2) + 1;
+=======
+				source = g.nextInt(temp * 2 + 1) + 1;
+>>>>>>> 05d4e3e3c81f5186c456c0dd46c0d4bdd2551a7e
 				target = temp + j;
 				u = 0;
 				if (source > temp) { // this is for the coin flipping, it means
