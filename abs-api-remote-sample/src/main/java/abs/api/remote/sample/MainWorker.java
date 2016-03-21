@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import abs.api.Actor;
 import abs.api.Reference;
+import abs.api.ReferenceFactory;
 import abs.api.remote.ActorServer;
 
 public class MainWorker {
@@ -42,6 +43,20 @@ public class MainWorker {
 		}	
 		
 		me.init(workerArray);
+		Node nodeId = new Node() {
+			
+			@Override
+			public int getId() {
+				// TODO Auto-generated method stub
+				return workers;
+			}
+		};
+		
+		Reference masterRef = ReferenceFactory.DEFAULT.create(nodeId.getName()+location+nodeId.getPort());
+		Master m = (Master)masterRef;
+		
+		Runnable readyRun = ()->m.workerReady(me.getId());
+		me.send(m, readyRun);
 		
 	}
 }

@@ -164,7 +164,7 @@ public class Worker extends AbstractNode implements Actor, Node {
 		}
 	}
 
-	public void run_() {
+	public int run_() {
 		int j = 0;
 		int i = d + 2 + (id - 1);
 		int temp = kInit + (id - 1) * d;
@@ -249,6 +249,7 @@ public class Worker extends AbstractNode implements Actor, Node {
 		}
 		// one while loops to wait for all delegates to finish
 		await(self, () -> this.aliveDelegates == 0);
+		return 0;
 
 	}
 }
