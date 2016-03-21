@@ -141,7 +141,6 @@ public class Worker extends AbstractNode implements Actor, Node {
 									// initial clique
 			u = ((target - 1) / d) * d;
 			u = g.nextInt(u) + 1;
-
 			int aIndex = actorIndex(u);
 
 			Worker w = workerArray[aIndex];
