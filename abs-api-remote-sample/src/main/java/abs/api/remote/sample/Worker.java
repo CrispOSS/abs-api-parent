@@ -27,7 +27,7 @@ public class Worker extends AbstractNode implements Actor, Node {
 	private int arr[];
 	private int initArr[];
 
-	private Actor workerArray[];
+	private String workerArray[];
 
 	private int size;
 
@@ -76,7 +76,7 @@ public class Worker extends AbstractNode implements Actor, Node {
 		workerSize = ((num) / workers) * d;
 	}
 
-	public void init(Actor workerArray[]) {
+	public void init(String workerArray[]) {
 
 		// START INIT clique of the graph
 		int index = 1;
@@ -148,7 +148,8 @@ public class Worker extends AbstractNode implements Actor, Node {
 
 			int aIndex = actorIndex(u);
 
-			Worker w = (Worker)workerArray[aIndex];
+			Reference rWorker = ReferenceFactory.DEFAULT.create(workerArray[aIndex]);
+			Worker w = (Worker)rWorker;
 
 			final int tmp = u;
 			Callable<Integer> c = () -> w.request(tmp);
@@ -210,7 +211,10 @@ public class Worker extends AbstractNode implements Actor, Node {
 				{
 					if (source > kInit) {
 						int aIndex = actorIndex(source);
-						Worker w = (Worker)workerArray[aIndex];
+						
+						
+						Reference rWorker = ReferenceFactory.DEFAULT.create(workerArray[aIndex]);
+						Worker w = (Worker)rWorker;
 
 						final int tmp = source;
 						Callable<Integer> cd = () -> w.request(tmp);

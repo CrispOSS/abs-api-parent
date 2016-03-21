@@ -28,12 +28,13 @@ public class MainWorker {
 			if(i==n)
 				workerArray[i]=me.getName()+location+me.getPort();
 			else{
+				final int id = i;
 				nodeId = new Node() {
 					
 					@Override
 					public int getId() {
 						// TODO Auto-generated method stub
-						return i;
+						return id;
 					}
 				};
 				workerArray[i] = nodeId.getName()+location+nodeId.getPort();
@@ -41,5 +42,6 @@ public class MainWorker {
 		}	
 		
 		me.init(workerArray);
+		
 	}
 }
