@@ -17,6 +17,8 @@ public class Worker extends AbstractNode implements Actor, Node {
 
 	static final Reference MASTER = ReferenceFactory.DEFAULT
 			.create("master@http://localhost:7777");
+	
+	final int UNRESOLVED = -1;
 
 	private int workers, localIndex, actorIndex, d, num, kInit, graphArraySize,
 			workerSize, aliveDelegates;
@@ -37,6 +39,10 @@ public class Worker extends AbstractNode implements Actor, Node {
 		this.d = d;
 		this.num = num;
 		this.size = size;
+		
+		arr = new int[size+2];
+		arr[0]=-2;
+		
 		initGlobals();
 	}
 
@@ -78,7 +84,7 @@ public class Worker extends AbstractNode implements Actor, Node {
 				if (j <= i)
 					this.arr[index] = j;
 				else
-					this.arr[index] = -1;
+					this.arr[index] = UNRESOLVED;
 				j = j + 1;
 			}
 			i = i + 1;
@@ -95,7 +101,7 @@ public class Worker extends AbstractNode implements Actor, Node {
 										// worker when it is resolved
 		if (source > kInit) {
 			int lSource = localIndex(source);
-			await(this, () -> arr[lSource] != -2);
+			await(this, () -> arr[lSource] != UNRESOLVED);
 			return arr[lSource];
 		} else
 			return arr[source];
@@ -103,11 +109,11 @@ public class Worker extends AbstractNode implements Actor, Node {
 
 	public void delegate(Response<Integer> ft, int target) {
 
-		await(this, () -> ft.getValue() != null);
+		await(self, () -> ft.getValue() != null);
 		int u = ft.getValue();
 		// START inlined conflictcheck
 		boolean found = false;
-		if (u != -1) {
+		if (u != UNRESOLVED) {
 			int i = ((target - 1) / d) * d + 1;
 			int lCurrentNode = i + d - 1;
 			int item = 0;
@@ -126,7 +132,7 @@ public class Worker extends AbstractNode implements Actor, Node {
 		}
 
 		// END inlined conflictcheck
-		if (found || u == -1) { // if conflict happens or it's an -1 from
+		if (found || u == UNRESOLVED) { // if conflict happens or it's an -1 from
 								// initial clique
 			u = ((target - 1) / d) * d;
 			u = g.nextInt(u) + 1;
@@ -137,7 +143,7 @@ public class Worker extends AbstractNode implements Actor, Node {
 			final int tmp = u;
 			Callable<Integer> c = () -> w.request(tmp);
 
-			Response<Integer> fp = send(w, c);
+			Response<Integer> fp = self.send(w, c);
 			this.delegate(fp, target);
 		} else { // the slot is resolved
 			int lTarget = localIndex(target);
@@ -176,7 +182,7 @@ public class Worker extends AbstractNode implements Actor, Node {
 					else 
 					{            // the picked element is from the shadow-clique array
 						u = arr[source];
-						if (u == -1)   // picked an empty element of initial clique
+						if (u == UNRESOLVED)   // picked an empty element of initial clique
 						       j = j - 1; // so retry
 						else {
 							u = (source - 1) / d + 1;
@@ -198,18 +204,18 @@ public class Worker extends AbstractNode implements Actor, Node {
 						final int tmp = source;
 						Callable<Integer> cd = () -> w.request(tmp);
 
-						Response<Integer> fp = send(w, cd);
+						Response<Integer> fp = self.send(w, cd);
 						 final int tmpTarget = target;
 						
 						Runnable cdel = () -> this.delegate(fp, tmpTarget);
 						
-						send(this,cdel);
+						self.send(self,cdel);
 						aliveDelegates = aliveDelegates + 1;
 					} else {
 						
 						u=arr[source];
 						
-						if (u == -1)   // picked an empty element of initial clique
+						if (u == UNRESOLVED)   // picked an empty element of initial clique
 						       j = j - 1;
 						else if (pastDraws.contains(u)) 
 							j = j - 1;
@@ -226,7 +232,7 @@ public class Worker extends AbstractNode implements Actor, Node {
 			temp = temp + d * workers ;
 	       }
 	       // one while loops to wait for all delegates to finish
-		await(this, () -> this.aliveDelegates ==2);
+		await(self, () -> this.aliveDelegates ==2);
 		
 	}
 }
