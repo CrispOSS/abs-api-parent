@@ -17,8 +17,9 @@ public class Worker extends AbstractNode implements Actor, Node {
 
 	static final Reference MASTER = ReferenceFactory.DEFAULT
 			.create("master@http://localhost:7777");
-	
-	final int UNRESOLVED = -1;
+
+	final int UNRESOLVED = 0;
+	final int HOLE = -1;
 
 	private int workers, localIndex, actorIndex, d, num, kInit, graphArraySize,
 			workerSize, aliveDelegates;
@@ -39,10 +40,13 @@ public class Worker extends AbstractNode implements Actor, Node {
 		this.d = d;
 		this.num = num;
 		this.size = size;
-		
-		arr = new int[size+2];
-		arr[0]=-2;
-		
+
+		arr = new int[size + 2];
+		arr[0] = -3;
+
+		initArr = new int[kInit + 2];
+		initArr[0] = -3;
+
 		initGlobals();
 	}
 
@@ -82,9 +86,9 @@ public class Worker extends AbstractNode implements Actor, Node {
 			while (j <= d) {
 				index = j + (i * d);
 				if (j <= i)
-					this.arr[index] = j;
+					this.initArr[index] = j;
 				else
-					this.arr[index] = UNRESOLVED;
+					this.initArr[index] = HOLE;
 				j = j + 1;
 			}
 			i = i + 1;
@@ -93,7 +97,8 @@ public class Worker extends AbstractNode implements Actor, Node {
 		// initialize the partition
 		index = 0;
 		while (index <= size) {
-			arr[index] = -2;
+			arr[index] = UNRESOLVED;
+			index++;
 		}
 	}
 
@@ -101,10 +106,10 @@ public class Worker extends AbstractNode implements Actor, Node {
 										// worker when it is resolved
 		if (source > kInit) {
 			int lSource = localIndex(source);
-			await(this, () -> arr[lSource] != UNRESOLVED);
+			await(self, () -> arr[lSource] != UNRESOLVED);
 			return arr[lSource];
 		} else
-			return arr[source];
+			return initArr[source];
 	}
 
 	public void delegate(Response<Integer> ft, int target) {
@@ -113,7 +118,7 @@ public class Worker extends AbstractNode implements Actor, Node {
 		int u = ft.getValue();
 		// START inlined conflictcheck
 		boolean found = false;
-		if (u != UNRESOLVED) {
+		if (u != HOLE) {
 			int i = ((target - 1) / d) * d + 1;
 			int lCurrentNode = i + d - 1;
 			int item = 0;
@@ -121,7 +126,7 @@ public class Worker extends AbstractNode implements Actor, Node {
 
 			while (i <= lCurrentNode) {
 				int li = localIndex(i);
-				if (arr[li] != -2)
+				if (arr[li] != UNRESOLVED)
 					if (arr[li] == u) {
 						found = true;
 						i = lCurrentNode + 1; // just to break the while
@@ -132,10 +137,11 @@ public class Worker extends AbstractNode implements Actor, Node {
 		}
 
 		// END inlined conflictcheck
-		if (found || u == UNRESOLVED) { // if conflict happens or it's an -1 from
-								// initial clique
+		if (found || u == HOLE) { // if conflict happens or it's an -1 from
+									// initial clique
 			u = ((target - 1) / d) * d;
 			u = g.nextInt(u) + 1;
+
 			int aIndex = actorIndex(u);
 
 			Worker w = workerArray[aIndex];
@@ -145,6 +151,7 @@ public class Worker extends AbstractNode implements Actor, Node {
 
 			Response<Integer> fp = self.send(w, c);
 			this.delegate(fp, target);
+
 		} else { // the slot is resolved
 			int lTarget = localIndex(target);
 			arr[lTarget] = u;
@@ -152,8 +159,7 @@ public class Worker extends AbstractNode implements Actor, Node {
 		}
 	}
 
-	public void run_()
-	{
+	public void run_() {
 		int j = 0;
 		int i = d + 2 + (id - 1);
 		int temp = kInit + (id - 1) * d;
@@ -164,75 +170,77 @@ public class Worker extends AbstractNode implements Actor, Node {
 			j = 1;
 			List<Integer> pastDraws = new ArrayList<Integer>();
 			while (j <= d) {
-				source = g.nextInt(temp)*2 +1;
+				source = g.nextInt(temp * 2) + 1;
 				target = temp + j;
-				u = 0;				
-				if (source > temp) { // this is for the coin flipping, it means that you pick from the shadow array
-					source=source-temp;
-					if (source > kInit){
+				u = 0;
+				if (source > temp) { // this is for the coin flipping, it means
+										// that you pick from the shadow array
+					source = source - temp;
+					if (source > kInit) {
 						u = (source - 1) / d + 1;
-						if (pastDraws.contains(u)) 
+						if (pastDraws.contains(u))
 							j = j - 1;
 						else {
 							pastDraws.add(u);
 							int lTarget = localIndex(target);
-							arr[lTarget]=u;
+							arr[lTarget] = u;
 						}
-					}  
-					else 
-					{            // the picked element is from the shadow-clique array
-						u = arr[source];
-						if (u == UNRESOLVED)   // picked an empty element of initial clique
-						       j = j - 1; // so retry
+					} else { // the picked element is from the shadow-clique
+								// array
+						u = initArr[source];
+						if (u == HOLE) // picked an empty element of initial
+										// clique
+							j = j - 1; // so retry
 						else {
 							u = (source - 1) / d + 1;
-							if (pastDraws.contains(u)) j = j - 1;
+							if (pastDraws.contains(u))
+								j = j - 1;
 							else {
 								pastDraws.add(u);
 								int lTarget = localIndex(target);
-								arr[lTarget]=u;
-							}					
+								arr[lTarget] = u;
+							}
 						}
-					} 
-				}
-				else             // here you pick from the real array
+					}
+				} else // here you pick from the real array
 				{
-					if (source > kInit){
+					if (source > kInit) {
 						int aIndex = actorIndex(source);
 						Worker w = workerArray[aIndex];
-						
+
 						final int tmp = source;
 						Callable<Integer> cd = () -> w.request(tmp);
 
 						Response<Integer> fp = self.send(w, cd);
-						 final int tmpTarget = target;
-						
+						final int tmpTarget = target;
+
 						Runnable cdel = () -> this.delegate(fp, tmpTarget);
-						
-						self.send(self,cdel);
+
+						self.send(self, cdel);
 						aliveDelegates = aliveDelegates + 1;
 					} else {
-						
-						u=arr[source];
-						
-						if (u == UNRESOLVED)   // picked an empty element of initial clique
-						       j = j - 1;
-						else if (pastDraws.contains(u)) 
+
+						u = initArr[source];
+
+						if (u == HOLE) // picked an empty element of
+												// initial clique
+							j = j - 1;
+						else if (pastDraws.contains(u))
 							j = j - 1;
 						else {
 							pastDraws.add(u);
 							int lTarget = localIndex(target);
-							arr[lTarget] =u;
-						}					
-					}	
-			       }
-			       j = j + 1;
+							arr[lTarget] = u;
+						}
+					}
+				}
+				j = j + 1;
 			}
 			i = i + workers;
-			temp = temp + d * workers ;
-	       }
-	       // one while loops to wait for all delegates to finish
-		await(self, () -> this.aliveDelegates ==2);
-		
+			temp = temp + d * workers;
+		}
+		// one while loops to wait for all delegates to finish
+		await(self, () -> this.aliveDelegates == 0);
+
 	}
 }
