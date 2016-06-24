@@ -21,10 +21,10 @@ import javax.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import abs.api.Actor;
-import abs.api.Context;
-import abs.api.FactoryLoader;
-import abs.api.Reference;
+import jabs.Actor;
+import jabs.Context;
+import jabs.FactoryLoader;
+import jabs.Reference;
 
 /**
  * @author Behrooz Nobakht

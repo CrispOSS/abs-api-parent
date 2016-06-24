@@ -2,8 +2,8 @@ package abs.api.remote;
 
 import java.net.URI;
 
-import abs.api.Reference;
-import abs.api.ReferenceFactory;
+import jabs.Reference;
+import jabs.ReferenceFactory;
 
 /**
  * @author Behrooz Nobakht

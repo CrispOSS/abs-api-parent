@@ -13,9 +13,9 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.glassfish.jersey.client.HttpUrlConnectorProvider;
 
-import abs.api.Context;
-import abs.api.Envelope;
-import abs.api.Router;
+import jabs.Context;
+import jabs.Envelope;
+import jabs.Router;
 
 /**
  * @author Behrooz Nobakht

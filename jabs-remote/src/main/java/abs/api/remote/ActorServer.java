@@ -24,9 +24,9 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import abs.api.Actor;
-import abs.api.Context;
-import abs.api.Lifecycle;
+import jabs.Actor;
+import jabs.Context;
+import jabs.Lifecycle;
 
 /**
  * @author Behrooz Nobakht

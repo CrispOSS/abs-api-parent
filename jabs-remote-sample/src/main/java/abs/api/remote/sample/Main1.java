@@ -2,10 +2,10 @@ package abs.api.remote.sample;
 
 import java.util.Properties;
 
-import abs.api.Actor;
-import abs.api.Configuration;
 import abs.api.remote.ActorServer;
 import abs.api.remote.MessageConverter;
+import jabs.Actor;
+import jabs.Configuration;
 
 /**
  * @author Behrooz Nobakht

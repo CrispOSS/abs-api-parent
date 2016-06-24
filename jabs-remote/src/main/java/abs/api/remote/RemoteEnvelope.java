@@ -15,9 +15,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import abs.api.Envelope;
-import abs.api.Reference;
-import abs.api.SimpleEnvelope;
+import jabs.Envelope;
+import jabs.Reference;
+import jabs.SimpleEnvelope;
 
 /**
  * An implementation of {@link Envelope} to encapsulate
@@ -36,8 +36,8 @@ class RemoteEnvelope extends SimpleEnvelope implements Envelope {
   }
 
   @Override
-  public <V> abs.api.Response<V> response() {
-    final abs.api.Response<V> cf = envelope.response();
+  public <V> jabs.Response<V> response() {
+    final jabs.Response<V> cf = envelope.response();
     try {
       final Response result = this.response.get(30, TimeUnit.SECONDS);
       Status status = Status.fromStatusCode(result.getStatus());

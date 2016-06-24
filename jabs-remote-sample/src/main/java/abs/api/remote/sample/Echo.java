@@ -5,8 +5,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import abs.api.Actor;
-import abs.api.Reference;
+import jabs.Actor;
+import jabs.Reference;
 
 /**
  * @author Behrooz Nobakht

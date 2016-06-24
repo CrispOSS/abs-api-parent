@@ -1,6 +1,6 @@
 package abs.api.remote.sample;
 
-import abs.api.Factory;
+import jabs.Factory;
 
 /**
  * @author Behrooz Nobakht

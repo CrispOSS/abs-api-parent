@@ -8,13 +8,13 @@ import java.util.function.BiConsumer;
 
 import javax.ws.rs.core.Application;
 
-import abs.api.Configuration;
-import abs.api.Context;
-import abs.api.LocalContext;
-import abs.api.LocalRouter;
-import abs.api.ReferenceFactory;
-import abs.api.Router;
-import abs.api.SystemContext;
+import jabs.Configuration;
+import jabs.Context;
+import jabs.LocalContext;
+import jabs.LocalRouter;
+import jabs.ReferenceFactory;
+import jabs.Router;
+import jabs.SystemContext;
 
 /**
  * @author Behrooz Nobakht

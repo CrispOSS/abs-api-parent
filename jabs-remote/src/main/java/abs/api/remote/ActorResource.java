@@ -16,11 +16,11 @@ import javax.ws.rs.ext.Provider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import abs.api.Actor;
-import abs.api.Context;
-import abs.api.Envelope;
-import abs.api.Reference;
-import abs.api.SimpleEnvelope;
+import jabs.Actor;
+import jabs.Context;
+import jabs.Envelope;
+import jabs.Reference;
+import jabs.SimpleEnvelope;
 
 /**
  * @author Behrooz Nobakht
@@ -55,7 +55,7 @@ public class ActorResource {
       Object messageParam = convertMessage(msg, converter);
       logger.debug("Received a message parameter from {} to {}: {}", sender, this.actor,
           messageParam);
-      abs.api.Response<Object> response = consumeMessage(sender, this.actor, this.actorObject,
+      jabs.Response<Object> response = consumeMessage(sender, this.actor, this.actorObject,
           this.consumer, messageParam, this.context);
       logger.debug("Remote envelope sent to {} from {}: {}", this.actor.toString(),
           sender.toString(), response);
@@ -66,7 +66,7 @@ public class ActorResource {
     }
   }
 
-  protected abs.api.Response<Object> consumeMessage(Reference sender, Actor receiver,
+  protected jabs.Response<Object> consumeMessage(Reference sender, Actor receiver,
       Object actorObject, BiConsumer consumer, Object messageParam, Context context) {
     if (consumer == null) {
       Envelope e = new SimpleEnvelope(sender, receiver, messageParam);
@@ -80,7 +80,7 @@ public class ActorResource {
         }
       };
       Runnable message = () -> consumer.accept(actorObject, messageParam);
-      abs.api.Response<Object> response = senderActor.send(receiver, message);
+      jabs.Response<Object> response = senderActor.send(receiver, message);
       return response;
     }
   }

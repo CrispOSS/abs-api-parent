@@ -2,10 +2,10 @@ package abs.api.remote;
 
 import java.net.URI;
 
-import abs.api.Context;
-import abs.api.Envelope;
-import abs.api.Reference;
-import abs.api.Router;
+import jabs.Context;
+import jabs.Envelope;
+import jabs.Reference;
+import jabs.Router;
 
 /**
  * @author Behrooz Nobakht
