@@ -1,4 +1,4 @@
-package abs.api.remote.sample;
+package jabs.remote.sample;
 
 import java.util.Properties;
 
