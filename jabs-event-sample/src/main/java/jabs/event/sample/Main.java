@@ -1,4 +1,4 @@
-package abs.api.event.sample;
+package jabs.event.sample;
 
 import abs.api.Actor;
 import jabs.event.EventContext;
