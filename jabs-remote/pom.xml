@@ -3,14 +3,13 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<name>ABS Remote API</name>
-	<artifactId>abs-api-remote</artifactId>
+	<name>jabs: Remote API</name>
+	<artifactId>jabs-remote</artifactId>
 	<packaging>jar</packaging>
-	<url>https://github.com/CrispOSS/abs-api-parent/tree/master/abs-api-remote</url>
 
 	<parent>
 		<groupId>com.github.crisposs</groupId>
-		<artifactId>abs-api-parent</artifactId>
+		<artifactId>jabs-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
@@ -51,7 +50,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.github.crisposs</groupId>
-			<artifactId>abs-api</artifactId>
+			<artifactId>jabs-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

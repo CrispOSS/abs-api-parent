@@ -4,15 +4,14 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.github.crisposs</groupId>
-	<name>ABS API Documentation</name>
-	<artifactId>abs-api-docs</artifactId>
+	<name>jabs: Documentation</name>
+	<artifactId>jabs-docs</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<url>https://github.com/CrispOSS/abs-api-parent/tree/master/abs-api-docs</url>
 	
 	<parent>
 		<groupId>com.github.crisposs</groupId>
-		<artifactId>abs-api-parent</artifactId>
+		<artifactId>jabs-parent</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
