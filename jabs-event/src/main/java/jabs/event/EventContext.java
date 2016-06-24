@@ -1,4 +1,4 @@
-package abs.api.event;
+package jabs.event;
 
 import abs.api.Configuration;
 import abs.api.LocalContext;

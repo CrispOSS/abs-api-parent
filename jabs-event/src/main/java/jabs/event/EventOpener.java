@@ -1,4 +1,4 @@
-package abs.api.event;
+package jabs.event;
 
 import reactor.core.Environment;
 import reactor.core.Reactor;

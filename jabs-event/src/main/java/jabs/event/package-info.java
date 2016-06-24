@@ -4,4 +4,4 @@
  * @author Behrooz Nobakht
  * @since 1.0
  */
-package abs.api.event;
+package jabs.event;

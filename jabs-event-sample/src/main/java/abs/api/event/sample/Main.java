@@ -1,7 +1,7 @@
 package abs.api.event.sample;
 
 import abs.api.Actor;
-import abs.api.event.EventContext;
+import jabs.event.EventContext;
 
 /**
  * @author Behrooz Nobakht
