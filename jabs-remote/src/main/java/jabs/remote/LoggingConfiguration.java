@@ -1,4 +1,4 @@
-package abs.api.remote;
+package jabs.remote;
 
 import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;

@@ -3,12 +3,12 @@ package abs.api.remote.sample;
 import java.util.Properties;
 import java.util.function.BiConsumer;
 
-import abs.api.remote.ActorServer;
-import abs.api.remote.MessageConverter;
 import jabs.Actor;
 import jabs.Configuration;
 import jabs.Context;
 import jabs.Reference;
+import jabs.remote.ActorServer;
+import jabs.remote.MessageConverter;
 
 /**
  * @author Behrooz Nobakht

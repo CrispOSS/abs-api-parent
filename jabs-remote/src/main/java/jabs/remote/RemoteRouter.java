@@ -1,4 +1,4 @@
-package abs.api.remote;
+package jabs.remote;
 
 import java.net.URI;
 import java.util.concurrent.ConcurrentHashMap;

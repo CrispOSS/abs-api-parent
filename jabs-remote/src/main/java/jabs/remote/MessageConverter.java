@@ -1,4 +1,4 @@
-package abs.api.remote;
+package jabs.remote;
 
 import java.io.InputStream;
 import java.io.ObjectInputStream;

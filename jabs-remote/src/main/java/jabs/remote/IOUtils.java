@@ -1,4 +1,4 @@
-package abs.api.remote;
+package jabs.remote;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

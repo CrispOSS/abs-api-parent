@@ -4,4 +4,4 @@
  * @author Behrooz Nobakht
  * @since 1.0
  */
-package abs.api.remote;
+package jabs.remote;

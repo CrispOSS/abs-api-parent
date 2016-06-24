@@ -1,4 +1,4 @@
-package abs.api.remote;
+package jabs.remote;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
