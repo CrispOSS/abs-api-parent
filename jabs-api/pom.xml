@@ -15,7 +15,6 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
 	</properties>
 
 	<build>
@@ -27,7 +26,6 @@
 		<dependency>
 			<groupId>net.openhft</groupId>
 			<artifactId>affinity</artifactId>
-			<version>3.0</version>
 		</dependency>
 	</dependencies>
 

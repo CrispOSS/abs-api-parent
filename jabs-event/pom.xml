@@ -15,8 +15,6 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-		<version.reactor>1.1.5.RELEASE</version.reactor>
 	</properties>
 
 	<build>
@@ -37,7 +35,6 @@
 		<dependency>
 			<groupId>org.projectreactor</groupId>
 			<artifactId>reactor-core</artifactId>
-			<version>${version.reactor}</version>
 		</dependency>
 	</dependencies>
 
