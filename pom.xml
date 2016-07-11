@@ -7,14 +7,14 @@
 	</prerequisites>
 
 	<groupId>com.github.crisposs</groupId>
-	<name>ABS API Parent</name>
-	<artifactId>abs-api-parent</artifactId>
+	<name>jabs: Parent</name>
+	<artifactId>jabs-parent</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<url>https://github.com/CrispOSS/abs-api-parent</url>
+	<url>https://github.com/CrispOSS/jabs</url>
 	<description><![CDATA[
-	ABS API is an Actor Model implementation in Java 8.
+	jabs is ABS concurrent object API in Java.
 	]]>
 	</description>
 
@@ -38,12 +38,12 @@
 	</properties>
 
 	<modules>
-		<module>abs-api</module>
-		<module>abs-api-event</module>
-		<module>abs-api-event-sample</module>
-		<module>abs-api-remote</module>
-		<module>abs-api-remote-sample</module>
-		<module>abs-api-docs</module>
+		<module>jabs-api</module>
+		<module>jabs-event</module>
+		<module>jabs-event-sample</module>
+		<module>jabs-remote</module>
+		<module>jabs-remote-sample</module>
+		<module>jabs-docs</module>
 	</modules>
 
 	<build>
@@ -211,9 +211,9 @@
 	</distributionManagement>
 
 	<scm>
-		<url>https://github.com/CrispOSS/abs-api-parent.git</url>
-		<connection>scm:git:https://github.com/CrispOSS/abs-api-paret.git</connection>
-		<developerConnection>scm:git:git@github.com:CrispOSS/abs-api-parent.git</developerConnection>
+		<url>https://github.com/CrispOSS/jabs.git</url>
+		<connection>scm:git:https://github.com/CrispOSS/jabs.git</connection>
+		<developerConnection>scm:git:git@github.com:CrispOSS/jabs.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
 
