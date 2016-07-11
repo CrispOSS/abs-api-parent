@@ -29,7 +29,7 @@
 		</dependency>
 		<dependency>
 			<groupId>com.github.crisposs</groupId>
-			<artifactId>abs-api</artifactId>
+			<artifactId>jabs-api</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>

@@ -1,7 +1,7 @@
 package jabs.event;
 
-import abs.api.Configuration;
-import abs.api.LocalContext;
+import jabs.Configuration;
+import jabs.LocalContext;
 
 /**
  * @author Behrooz Nobakht

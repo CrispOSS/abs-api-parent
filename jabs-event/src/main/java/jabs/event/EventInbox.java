@@ -1,8 +1,8 @@
 package jabs.event;
 
-import abs.api.AbstractInbox;
-import abs.api.Envelope;
-import abs.api.Opener;
+import jabs.AbstractInbox;
+import jabs.Envelope;
+import jabs.Opener;
 
 /**
  * @author Behrooz Nobakht

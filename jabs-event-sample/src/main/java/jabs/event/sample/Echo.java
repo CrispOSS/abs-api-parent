@@ -3,8 +3,8 @@ package jabs.event.sample;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import abs.api.Actor;
-import abs.api.Behavior;
+import jabs.Actor;
+import jabs.Behavior;
 
 /**
  * @author Behrooz Nobakht

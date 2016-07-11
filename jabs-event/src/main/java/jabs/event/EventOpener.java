@@ -7,8 +7,8 @@ import reactor.event.Event;
 import reactor.event.selector.Selector;
 import reactor.event.selector.Selectors;
 import reactor.function.Consumer;
-import abs.api.DefaultOpener;
-import abs.api.Opener;
+import jabs.DefaultOpener;
+import jabs.Opener;
 
 /**
  * An {@link Opener} that executes asynchronous messages using an
