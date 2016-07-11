@@ -38,7 +38,7 @@ REL_VERSION="$1"
 DEV_VERSION="$2"
 GPG_PASS="$3"
 # GPG keyname for 'nobeh'
-GPG_KEYNAME="${4:-52851C86}"
+GPG_KEYNAME="${4:-2C3A8E57}"
 REL_TAG="v${REL_VERSION}"
 
 mvn clean
