@@ -9,7 +9,7 @@
 	<groupId>com.github.crisposs</groupId>
 	<name>jabs: Parent</name>
 	<artifactId>jabs-parent</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>0.9.2</version>
 	<packaging>pom</packaging>
 
 	<url>https://github.com/CrispOSS/jabs</url>
@@ -219,7 +219,7 @@
 		<url>https://github.com/CrispOSS/jabs.git</url>
 		<connection>scm:git:https://github.com/CrispOSS/jabs.git</connection>
 		<developerConnection>scm:git:git@github.com:CrispOSS/jabs.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>v0.9.2</tag>
 	</scm>
 
 	<profiles>
