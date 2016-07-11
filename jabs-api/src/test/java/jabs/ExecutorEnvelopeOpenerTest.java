@@ -1,6 +1,6 @@
 package jabs;
 
-import static org.junit.gen5.api.Assertions.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,18 +8,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.PriorityBlockingQueue;
 
-import org.junit.gen5.api.Test;
-
-import jabs.Configuration;
-import jabs.Context;
-import jabs.Envelope;
-import jabs.LocalContext;
-import jabs.MethodReference;
-import jabs.OrderedThreadPoolExecutor;
-import jabs.QueueOpener;
-import jabs.Reference;
-import jabs.Sequencer;
-import jabs.SimpleEnvelope;
+import org.junit.Test;
 
 /**
  * 

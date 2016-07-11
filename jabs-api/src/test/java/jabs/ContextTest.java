@@ -1,17 +1,12 @@
 package jabs;
 
-import static org.junit.gen5.api.Assertions.assertEquals;
-import static org.junit.gen5.api.Assertions.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
-import org.junit.gen5.api.Test;
-
-import jabs.Actor;
-import jabs.AsyncInbox;
-import jabs.Configuration;
-import jabs.LocalContext;
+import org.junit.Test;
 
 /**
  * @author Behrooz Nobakht

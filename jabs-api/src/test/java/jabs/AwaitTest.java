@@ -16,16 +16,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.junit.gen5.api.Test;
-
-import jabs.Actor;
-import jabs.AwaitEnvelope;
-import jabs.Configuration;
-import jabs.Context;
-import jabs.Envelope;
-import jabs.LocalContext;
-import jabs.ObjectInbox;
-import jabs.Response;
+import org.junit.Test;
 
 /**
  * Tests around "await" API.

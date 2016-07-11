@@ -1,18 +1,9 @@
 package jabs;
 
-import static org.junit.gen5.api.Assertions.assertEquals;
-import static org.junit.gen5.api.Assertions.assertNotNull;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import org.junit.gen5.api.Test;
-
-import jabs.AbstractInbox;
-import jabs.Actor;
-import jabs.Configuration;
-import jabs.Context;
-import jabs.Envelope;
-import jabs.LocalContext;
-import jabs.MethodReference;
-import jabs.SimpleEnvelope;
+import org.junit.Test;
 
 /**
  * 
